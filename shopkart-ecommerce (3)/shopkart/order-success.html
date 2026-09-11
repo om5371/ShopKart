@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Placed — ShopKart</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">Shop<span class="dot">Kart</span></a>
+    <div class="header-actions" style="margin-left:auto;">
+      <a id="accountLink" href="login.html"><i class="fa-solid fa-user"></i><span id="accountLabel">Login</span></a>
+      <a href="cart.html" style="position:relative;"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span><span class="cart-badge" style="display:none;">0</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="container section">
+  <div class="success-box" id="successBox"></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/db.js"></script>
+<script src="js/ui.js"></script>
+<script>
+const params = new URLSearchParams(window.location.search);
+const order = getOrders().find(o => o.id === params.get("id"));
+const box = document.getElementById("successBox");
+if (!order) {
+  box.innerHTML = `<h2>Order not found</h2><a href="index.html" class="btn btn-dark">Go Home</a>`;
+} else {
+  box.innerHTML = `
+    <i class="fa-solid fa-circle-check"></i>
+    <h2>Order placed successfully!</h2>
+    <p style="color:var(--muted);">Thank you, ${order.customerName}. We've received your order and will start processing it shortly.</p>
+    <div class="order-id">${order.id}</div>
+    <p style="color:var(--muted);font-size:14px;">Total paid: <strong style="color:var(--ink);">${formatINR(order.total)}</strong> via ${order.payment.method.toUpperCase()}</p>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+      <a href="account.html" class="btn btn-dark">View My Orders</a>
+      <a href="category.html" class="btn btn-outline" style="border-color:var(--navy);color:var(--navy);">Continue Shopping</a>
+    </div>`;
+}
+</script>
+</body>
+</html>

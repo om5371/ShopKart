@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopKart — Online Shopping in India</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="container">
+    <span><i class="fa-solid fa-truck-fast"></i>&nbsp; Free delivery on orders above ₹999</span>
+    <span>Help Center &nbsp;|&nbsp; Track Order</span>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">Shop<span class="dot">Kart</span></a>
+    <form class="search-form" id="searchForm">
+      <input type="text" id="searchInput" placeholder="Search for products, brands and more">
+      <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+    <div class="header-actions">
+      <a id="accountLink" href="login.html"><i class="fa-solid fa-user"></i><span id="accountLabel">Login</span></a>
+      <a href="cart.html" style="position:relative;">
+        <i class="fa-solid fa-cart-shopping"></i><span>Cart</span>
+        <span class="cart-badge" style="display:none;">0</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="category-nav">
+  <div class="container" id="categoryNav"></div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div>
+      <span class="eyebrow">New Season Arrivals</span>
+      <h1>Shop everything you<br>need, <span>delivered fast.</span></h1>
+      <p>Electronics, fashion, footwear, home essentials and accessories — all in one place, with prices in Indian Rupees and secure checkout.</p>
+      <a href="category.html" class="btn btn-primary">Start Shopping <i class="fa-solid fa-arrow-right"></i></a>
+      <a href="#featured" class="btn btn-outline" style="margin-left:12px;">View Deals</a>
+    </div>
+    <div class="hero-media">
+      <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=75" alt="Shopping bags with real products">
+      <div class="hero-tag"><b>Up to 40% OFF</b>on Electronics &amp; Fashion</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Browse</span>
+        <h2>Shop by Category</h2>
+      </div>
+      <a href="category.html" class="view-all">View all categories <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="cat-grid" id="catGrid"></div>
+  </div>
+</section>
+
+<section class="section" id="featured" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Handpicked</span>
+        <h2>Best Deals For You</h2>
+      </div>
+      <a href="category.html" class="view-all">View all products <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="product-grid" id="featuredGrid"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Trending</span>
+        <h2>New Arrivals</h2>
+      </div>
+    </div>
+    <div class="product-grid" id="newGrid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-grid">
+    <div>
+      <a href="index.html" class="logo" style="color:#fff;">Shop<span class="dot">Kart</span></a>
+      <p style="font-size:13.5px;margin-top:12px;max-width:280px;">India's dependable destination for electronics, fashion, footwear, home essentials and accessories.</p>
+      <div class="social-row">
+        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+      </div>
+    </div>
+    <div>
+      <h4>Shop</h4>
+      <ul id="footerCats"></ul>
+    </div>
+    <div>
+      <h4>Account</h4>
+      <ul>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html">Create Account</a></li>
+        <li><a href="cart.html">My Cart</a></li>
+        <li><a href="account.html">My Orders</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Returns &amp; Refunds</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 ShopKart. All prices are shown in Indian Rupees (₹). Demo project for educational purposes.</div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/db.js"></script>
+<script src="js/ui.js"></script>
+<script>
+  // Category nav + footer links
+  const navHtml = CATEGORIES.map(c => `<a href="category.html?cat=${c.id}">${c.name}</a>`).join("");
+  document.getElementById("categoryNav").innerHTML = navHtml;
+  document.getElementById("footerCats").innerHTML = CATEGORIES.map(c => `<li><a href="category.html?cat=${c.id}">${c.name}</a></li>`).join("");
+
+  // Category grid
+  document.getElementById("catGrid").innerHTML = CATEGORIES.map(c => `
+    <a href="category.html?cat=${c.id}" class="cat-card">
+      <div class="cat-img"><img src="${c.banner}" alt="${c.name}"></div>
+      <div class="cat-label"><i class="fa-solid ${c.icon}"></i>${c.name}</div>
+    </a>`).join("");
+
+  // Featured = discounted items
+  const featured = PRODUCTS.filter(p => p.oldPrice).slice(0, 8);
+  document.getElementById("featuredGrid").innerHTML = featured.map(productCardHtml).join("");
+
+  // New arrivals = last 8 products
+  const newest = PRODUCTS.slice(-8);
+  document.getElementById("newGrid").innerHTML = newest.map(productCardHtml).join("");
+</script>
+</body>
+</html>

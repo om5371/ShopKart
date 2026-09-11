@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop Categories — ShopKart</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">Shop<span class="dot">Kart</span></a>
+    <form class="search-form" id="searchForm">
+      <input type="text" id="searchInput" placeholder="Search for products, brands and more">
+      <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+    <div class="header-actions">
+      <a id="accountLink" href="login.html"><i class="fa-solid fa-user"></i><span id="accountLabel">Login</span></a>
+      <a href="cart.html" style="position:relative;">
+        <i class="fa-solid fa-cart-shopping"></i><span>Cart</span>
+        <span class="cart-badge" style="display:none;">0</span>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="category-nav"><div class="container" id="categoryNav"></div></nav>
+
+<div class="container">
+  <div class="breadcrumb"><a href="index.html">Home</a> / <span id="crumbLabel">All Categories</span></div>
+</div>
+
+<div class="container">
+  <div class="category-layout">
+    <aside class="filter-box">
+      <h4>Categories</h4>
+      <div id="catFilterList"></div>
+      <hr>
+      <h4>Subcategory</h4>
+      <div id="subcatFilterList"><p style="font-size:12.5px;color:var(--muted);">Select a category first</p></div>
+      <hr>
+      <h4>Price Range</h4>
+      <div class="price-inputs">
+        <input type="number" id="minPrice" placeholder="Min ₹">
+        <input type="number" id="maxPrice" placeholder="Max ₹">
+      </div>
+      <button class="btn btn-dark btn-block mt-24" id="applyFilters">Apply Filters</button>
+      <button class="btn btn-outline btn-block mt-24" style="border-color:var(--navy);color:var(--navy);" id="clearFilters">Clear All</button>
+    </aside>
+    <div>
+      <div class="flex-between mb-24">
+        <span id="resultCount" style="font-size:13.5px;color:var(--muted);"></span>
+        <select id="sortSelect" class="status-select">
+          <option value="relevance">Sort: Relevance</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating">Rating: High to Low</option>
+        </select>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+      <div id="noResults" class="empty-state" style="display:none;">
+        <i class="fa-solid fa-box-open"></i>
+        <h3>No products found</h3>
+        <p>Try adjusting your filters or search term.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer style="margin-top:60px;">
+  <div class="footer-bottom">© 2026 ShopKart. All prices are shown in Indian Rupees (₹). Demo project for educational purposes.</div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/db.js"></script>
+<script src="js/ui.js"></script>
+<script>
+const navHtml = CATEGORIES.map(c => `<a href="category.html?cat=${c.id}">${c.name}</a>`).join("");
+document.getElementById("categoryNav").innerHTML = navHtml;
+
+const params = new URLSearchParams(window.location.search);
+let selectedCat = params.get("cat") || "";
+let selectedSubcats = [];
+let searchTerm = params.get("search") || "";
+
+function renderCatFilters() {
+  const html = [`<label><input type="radio" name="catf" value="" ${selectedCat===""?"checked":""}> All Categories</label>`]
+    .concat(CATEGORIES.map(c => `<label><input type="radio" name="catf" value="${c.id}" ${selectedCat===c.id?"checked":""}> ${c.name}</label>`));
+  document.getElementById("catFilterList").innerHTML = html.join("");
+  document.querySelectorAll('input[name="catf"]').forEach(r => r.addEventListener("change", e => {
+    selectedCat = e.target.value; selectedSubcats = []; renderSubcatFilters(); renderProducts();
+  }));
+}
+
+function renderSubcatFilters() {
+  const box = document.getElementById("subcatFilterList");
+  if (!selectedCat) { box.innerHTML = `<p style="font-size:12.5px;color:var(--muted);">Select a category first</p>`; return; }
+  const cat = getCategory(selectedCat);
+  box.innerHTML = cat.subcategories.map(s => `<label><input type="checkbox" value="${s}"> ${s}</label>`).join("");
+  box.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener("change", () => {
+    selectedSubcats = Array.from(box.querySelectorAll('input:checked')).map(i => i.value);
+    renderProducts();
+  }));
+}
+
+function renderProducts() {
+  let list = PRODUCTS.slice();
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    list = list.filter(p => p.name.toLowerCase().includes(q) || p.category.includes(q) || p.subcategory.toLowerCase().includes(q));
+    document.getElementById("crumbLabel").textContent = `Search results for "${searchTerm}"`;
+  } else if (selectedCat) {
+    list = list.filter(p => p.category === selectedCat);
+    document.getElementById("crumbLabel").textContent = getCategory(selectedCat).name;
+  } else {
+    document.getElementById("crumbLabel").textContent = "All Categories";
+  }
+  if (selectedSubcats.length) list = list.filter(p => selectedSubcats.includes(p.subcategory));
+
+  const min = parseFloat(document.getElementById("minPrice").value);
+  const max = parseFloat(document.getElementById("maxPrice").value);
+  if (!isNaN(min)) list = list.filter(p => p.price >= min);
+  if (!isNaN(max)) list = list.filter(p => p.price <= max);
+
+  const sort = document.getElementById("sortSelect").value;
+  if (sort === "price-asc") list.sort((a,b) => a.price - b.price);
+  if (sort === "price-desc") list.sort((a,b) => b.price - a.price);
+  if (sort === "rating") list.sort((a,b) => b.rating - a.rating);
+
+  document.getElementById("resultCount").textContent = `${list.length} product${list.length!==1?"s":""} found`;
+  document.getElementById("productGrid").innerHTML = list.map(productCardHtml).join("");
+  document.getElementById("productGrid").style.display = list.length ? "grid" : "none";
+  document.getElementById("noResults").style.display = list.length ? "none" : "block";
+}
+
+document.getElementById("applyFilters").addEventListener("click", renderProducts);
+document.getElementById("clearFilters").addEventListener("click", () => {
+  selectedCat=""; selectedSubcats=[]; searchTerm="";
+  document.getElementById("minPrice").value=""; document.getElementById("maxPrice").value="";
+  renderCatFilters(); renderSubcatFilters(); renderProducts();
+});
+document.getElementById("sortSelect").addEventListener("change", renderProducts);
+
+renderCatFilters();
+renderSubcatFilters();
+renderProducts();
+</script>
+</body>
+</html>

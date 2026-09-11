@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — ShopKart</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">Shop<span class="dot">Kart</span> <span style="font-size:12px;background:var(--marigold);color:var(--ink);padding:2px 8px;border-radius:5px;margin-left:6px;">ADMIN</span></a>
+    <div class="header-actions" style="margin-left:auto;">
+      <a href="index.html"><i class="fa-solid fa-house"></i><span>View Site</span></a>
+      <a href="#" onclick="logoutUser();window.location.href='login.html';"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="admin-shell">
+  <aside class="admin-side">
+    <div class="brand">Admin Panel</div>
+    <a href="#dashboard" class="tab-link active" data-tab="dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+    <a href="#orders" class="tab-link" data-tab="orders"><i class="fa-solid fa-receipt"></i> Orders &amp; Payments</a>
+    <a href="#products" class="tab-link" data-tab="products"><i class="fa-solid fa-boxes-stacked"></i> Products</a>
+    <a href="#users" class="tab-link" data-tab="users"><i class="fa-solid fa-users"></i> Users</a>
+  </aside>
+
+  <main class="admin-main">
+    <div id="tab-dashboard" class="tab-panel"></div>
+    <div id="tab-orders" class="tab-panel" style="display:none;"></div>
+    <div id="tab-products" class="tab-panel" style="display:none;"></div>
+    <div id="tab-users" class="tab-panel" style="display:none;"></div>
+  </main>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/db.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
